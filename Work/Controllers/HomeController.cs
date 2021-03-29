@@ -31,7 +31,7 @@ namespace Work.Controllers
             return View(FIO);
         }
         [HttpPost]
-        public async  Task<IActionResult> Сreate(IFormFile uploadedFile, User user)
+        public IActionResult Сreate(IFormFile uploadedFile, User user)
         {
             db.Users.Add(user);
             if (uploadedFile != null)
@@ -40,14 +40,14 @@ namespace Work.Controllers
                 string path = "/Files/" + uploadedFile.FileName;   // путь к папке Files
                 using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))      // сохраняем файл в папку Files в каталоге wwwroot
                 {
-                    await uploadedFile.CopyToAsync(fileStream);
+                     uploadedFile.CopyToAsync(fileStream);
                 }
                 user.PATH = path;
                 user.Imagename = uploadedFile.FileName;
                 db.SaveChanges();
             }
 
-            await db.SaveChangesAsync();
+            db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
     
@@ -55,8 +55,8 @@ namespace Work.Controllers
         {
             return View();
         }
-        
-        
+
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id != null)
@@ -68,22 +68,24 @@ namespace Work.Controllers
             return NotFound();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(IFormFile uploadedFile,User user)
+        public IActionResult Edit(IFormFile uploadedFile, User user)
         {
-        
+
             if (uploadedFile != null)
-            {  
+            {
                 string path = "/Files/" + uploadedFile.FileName;   // путь к папке Files
                 using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))      // сохраняем файл в папку Files в каталоге wwwroot
                 {
-                    await uploadedFile.CopyToAsync(fileStream);
+                     uploadedFile.CopyToAsync(fileStream);
                 }
                 user.PATH = path;
                 user.Imagename = uploadedFile.FileName;
-                db.SaveChanges();
                 db.Users.Update(user);
-                await db.SaveChangesAsync();
-            }   
+                 db.SaveChanges();
+            }
+            db.SaveChanges();
+                db.Users.Update(user);
+                 db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -117,4 +119,3 @@ namespace Work.Controllers
         }
     }
 }
-
